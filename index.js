@@ -9,7 +9,7 @@ const cors = require("cors");
 const background = require("./model/heroBgModel");
 app.use(
   cors({
-    origin: "*",
+    origin: ["*", "http://localhost:5500/"],
   })
 );
 
@@ -24,7 +24,7 @@ app.use(
   fileUpload({
     useTempFiles: true,
   })
-); 
+);
 
 // cloudinary config
 cloudinary.config({
