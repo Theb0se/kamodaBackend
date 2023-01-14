@@ -15,7 +15,9 @@ app.use(
       "http://localhost:5500/",
       "http://127.0.0.1:5173",
       "http://192.168.1.100:5173",
+      "http://192.168.1.100:5500",
     ],
+    methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
   })
 );
 
@@ -74,7 +76,7 @@ app.get("/updatePopup/delete/:id", async (req, res) => {
   }
 });
 
-app.get("/updatePopup", async (req, res) => {
+app.get("/updatePopup", cors(), async (req, res) => {
   const data = (await Update.find({})).reverse();
   res.status(201).json(data);
 });
@@ -100,7 +102,7 @@ app.post("/background", async (req, res) => {
   }
 });
 
-app.get("/bg", async (req, res) => {
+app.get("/bg", cors(), async (req, res) => {
   const data = (await background.find({})).reverse();
 
   res.status(201).json(data);
