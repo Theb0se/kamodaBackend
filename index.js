@@ -7,9 +7,15 @@ const Update = require("./model/updateModel");
 const cloudinary = require("cloudinary").v2;
 const cors = require("cors");
 const background = require("./model/heroBgModel");
+const Admin = require("./model/adminModel");
 app.use(
   cors({
-    origin: ["*", "http://localhost:5500/"],
+    origin: [
+      "*",
+      "http://localhost:5500/",
+      "http://127.0.0.1:5173",
+      "http://192.168.1.100:5173",
+    ],
   })
 );
 
@@ -39,34 +45,33 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/", async (req, res) => {
-  const data = (await Update.find({})).reverse();
-  res.render("index", { data });
+  res.send("hello World");
 });
 
 app.post("/updatePopup", async (req, res) => {
-  const file = req.files.photo;
-  console.log(file);
-  await cloudinary.uploader.upload(
-    file.tempFilePath,
-    { folder: "thekamodaResort" },
-    (err, result) => {
-      // console.log(result);
-      // res.send(result.url);
-      const update = Update.create({
-        url: result.url,
-        name: file.name,
-      });
-      if (update) {
-        res.redirect("/");
-      }
-    }
-  );
+  const { url, name } = req.body;
+  const update = Update.create({
+    url: url,
+    name: name,
+  });
+
+  if (update) {
+    res.status(201).json("Success");
+  } else {
+    console.log(error);
+    res.status(400).json("Error , Please Try Again");
+  }
 });
 
 // deleteupdate
 app.get("/updatePopup/delete/:id", async (req, res) => {
   const dlt = await Update.findByIdAndDelete(req.params.id);
-  res.redirect("/");
+  if (dlt) {
+    res.status(201).json("Success");
+  } else {
+    console.log(error);
+    res.status(400).json("Error , Please Try Again");
+  }
 });
 
 app.get("/updatePopup", async (req, res) => {
@@ -75,38 +80,23 @@ app.get("/updatePopup", async (req, res) => {
 });
 
 // backgroundImagePage
-app.get("/background", async (req, res) => {
-  const data = (await background.find({})).reverse();
-  console.log(data);
-  res.render("background", { data });
-});
 
 app.post("/background", async (req, res) => {
-  const file = req.files.photo;
-  const type = req.body.type;
-  console.log(type);
-
-  const url = await cloudinary.uploader.upload(
-    file.tempFilePath,
-    { folder: "thekamodaResort/background" },
-    (err, result) => {
-      return result;
-    }
-  );
-
-  console.log(url);
-  const id = await background.findOne({ type });
-
+  const { type, url } = req.body;
+  console.log(type, url);
   const bg = await background.findByIdAndUpdate(
-    id._id,
+    type,
     {
-      url: url.url,
+      url: url,
     },
     { new: true }
   );
-  console.log(id);
+  console.log(bg);
   if (bg) {
-    res.redirect("/background");
+    res.status(201).json("Success");
+  } else {
+    console.log(error);
+    res.status(400).json("Error , Please Try Again");
   }
 });
 
@@ -114,6 +104,31 @@ app.get("/bg", async (req, res) => {
   const data = (await background.find({})).reverse();
 
   res.status(201).json(data);
+});
+
+// Admin
+
+app.post("/signup", async (req, res) => {
+  const { email, password } = req.body;
+  const admin = await Admin.create({ email, password });
+  if (admin) {
+    res.status(201).json(admin);
+  } else {
+    res.status(400).json("Error");
+  }
+});
+app.post("/signin", async (req, res) => {
+  const { email, password } = req.body;
+  const admin = await Admin.findOne({ email });
+
+  if (admin && admin.password === password) {
+    res.status(201).json({
+      id: admin._id,
+      email: admin.email,
+    });
+  } else {
+    res.status(400).json("email or passsword wrong");
+  }
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
