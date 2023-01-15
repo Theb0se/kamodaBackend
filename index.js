@@ -29,29 +29,15 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(__dirname + "/public"));
 
-app.use(
-  fileUpload({
-    useTempFiles: true,
-  })
-);
-
-// cloudinary config
-cloudinary.config({
-  cloud_name: process.env.Cloud_Name,
-  api_key: process.env.API_Key,
-  api_secret: process.env.API_Secret,
-  secure: true,
-});
-
-app.get("/login", (req, res) => {
+app.get("/login", cors(), (req, res) => {
   res.render("signup");
 });
 
-app.get("/", async (req, res) => {
-  res.send("hello World");
+app.get("/", cors(), async (req, res) => {
+  res.send("hello Kamoda");
 });
 
-app.post("/updatePopup", async (req, res) => {
+app.post("/updatePopup", cors(), async (req, res) => {
   const { url, name } = req.body;
   const update = Update.create({
     url: url,
@@ -67,7 +53,7 @@ app.post("/updatePopup", async (req, res) => {
 });
 
 // deleteupdate
-app.get("/updatePopup/delete/:id", async (req, res) => {
+app.get("/updatePopup/delete/:id", cors(), async (req, res) => {
   const dlt = await Update.findByIdAndDelete(req.params.id);
   if (dlt) {
     res.status(201).json("Success");
@@ -84,7 +70,7 @@ app.get("/updatePopup", cors(), async (req, res) => {
 
 // backgroundImagePage
 
-app.post("/background", async (req, res) => {
+app.post("/background", cors(), async (req, res) => {
   const { type, url } = req.body;
   console.log(type, url);
   const bg = await background.findByIdAndUpdate(
@@ -111,7 +97,7 @@ app.get("/bg", cors(), async (req, res) => {
 
 // Admin
 
-app.post("/signup", async (req, res) => {
+app.post("/signup", cors(), async (req, res) => {
   const { email, password } = req.body;
   const admin = await Admin.create({ email, password });
   if (admin) {
@@ -120,7 +106,7 @@ app.post("/signup", async (req, res) => {
     res.status(400).json("Error");
   }
 });
-app.post("/signin", async (req, res) => {
+app.post("/signin", cors(), async (req, res) => {
   const { email, password } = req.body;
   const admin = await Admin.findOne({ email });
 
