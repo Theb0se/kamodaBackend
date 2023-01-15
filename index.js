@@ -13,6 +13,7 @@ app.use(
     origin: [
       "*",
       "http://localhost:5500/",
+      "http://localhost:3000/",
       "http://127.0.0.1:5173",
       "http://192.168.1.100:5173",
       "http://192.168.1.100:5500",
