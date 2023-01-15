@@ -2,9 +2,7 @@ const express = require("express");
 const connectDB = require("./config/db");
 const app = express();
 require("dotenv").config();
-const fileUpload = require("express-fileupload");
 const Update = require("./model/updateModel");
-const cloudinary = require("cloudinary").v2;
 const cors = require("cors");
 const background = require("./model/heroBgModel");
 const Admin = require("./model/adminModel");
@@ -15,8 +13,12 @@ app.use(
       "http://localhost:5500/",
       "http://localhost:3000/",
       "http://127.0.0.1:5173",
+      "http://127.0.0.1:3000",
       "http://192.168.1.100:5173",
       "http://192.168.1.100:5500",
+      "http://192.168.1.100:3000",
+      "https://thekamodaresort.com/",
+      "https://thekamodaresort.com/admin",
     ],
     methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
   })
@@ -34,7 +36,7 @@ app.get("/login", cors(), (req, res) => {
 });
 
 app.get("/", cors(), async (req, res) => {
-  res.send("hello Kamoda");
+  res.send("hello the kamoda resort");
 });
 
 app.post("/updatePopup", cors(), async (req, res) => {
