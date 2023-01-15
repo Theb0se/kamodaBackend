@@ -35,7 +35,7 @@ app.get("/login", cors(), (req, res) => {
 });
 
 app.get("/", cors(), async (req, res) => {
-  res.send("hello the kamoda resort");
+  res.send("hello the kamoda resort 2");
 });
 
 app.post("/updatePopup", cors(), async (req, res) => {
