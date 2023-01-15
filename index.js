@@ -10,19 +10,18 @@ app.use(
   cors({
     origin: [
       "*",
-      "http://localhost:5500/",
-      "http://localhost:3000/",
-      "http://127.0.0.1:5173",
-      "http://127.0.0.1:3000",
-      "http://192.168.1.100:5173",
-      "http://192.168.1.100:5500",
       "http://192.168.1.100:3000",
       "https://thekamodaresort.com/",
       "https://thekamodaresort.com/admin",
     ],
+
     methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
   })
 );
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  next();
+});
 
 const port = process.env.PORT || 8080;
 connectDB();
