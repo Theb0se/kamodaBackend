@@ -49,7 +49,10 @@ app.get("/login", cors(), (req, res) => {
 });
 
 app.get("/", cors(), async (req, res) => {
-  res.send("hello the kamoda resort 3");
+  console.log(req.socket.remoteAddress);
+  console.log(req.ip);
+
+  res.send(req.ip, req.socket.remoteAddress);
 });
 
 app.post("/updatePopup", cors(), async (req, res) => {
