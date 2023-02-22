@@ -6,11 +6,15 @@ const Update = require("./model/updateModel");
 const cors = require("cors");
 const background = require("./model/heroBgModel");
 const Admin = require("./model/adminModel");
+const Feedback = require("./model/feedbackModel");
+const nodemailer = require("nodemailer");
+
 app.use(
   cors({
     origin: [
       "*",
       "http://192.168.1.100:3000",
+      "http://192.168.1.100:5500",
       "https://thekamodaresort.com",
       "https://thekamodaresort.com/admin",
     ],
@@ -21,6 +25,16 @@ app.use(
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   next();
+});
+
+let transporter = nodemailer.createTransport({
+  host: "smtp.hostinger.com",
+  port: 465,
+  secure: true, // true for 465, false for other ports
+  auth: {
+    user: process.env.user,
+    pass: process.env.pass,
+  },
 });
 
 const port = process.env.PORT || 8080;
@@ -35,7 +49,7 @@ app.get("/login", cors(), (req, res) => {
 });
 
 app.get("/", cors(), async (req, res) => {
-  res.send("hello the kamoda resort 2");
+  res.send("hello the kamoda resort 3");
 });
 
 app.post("/updatePopup", cors(), async (req, res) => {
@@ -94,6 +108,99 @@ app.get("/bg", cors(), async (req, res) => {
   const data = (await background.find({})).reverse();
 
   res.status(201).json(data);
+});
+
+// Post Feedback
+app.post("/feedback", async (req, res) => {
+  const {
+    name,
+    number,
+    checkin,
+    duration,
+    hearAbout,
+    ReservationType,
+    VisitPurpose,
+    ServiceQuality,
+    Cleanliness,
+    Food,
+    StaffBehaviour,
+    OverallExperience,
+    OtherSuggestion,
+  } = req.body;
+
+  console.log(
+    name,
+    number,
+    checkin,
+    duration,
+    hearAbout,
+    ReservationType,
+    VisitPurpose,
+    ServiceQuality,
+    Cleanliness,
+    Food,
+    StaffBehaviour,
+    OverallExperience,
+    OtherSuggestion
+  );
+
+  let info = await transporter.sendMail({
+    from: `${name} <kamodafeedback@theb0se.com>`, // sender address
+    to: "rishabhbose3@gmail.com", // list of receivers
+    subject: `New Feedback From ${name}`, // Subject line
+    html: `
+    <p><b>Name : ${name}</b></p>
+    <p><b>Number : ${number}</b></p>
+    <p><b>Check-in Date : ${checkin}</b></p>
+    <p><b>Duration Of Stay : ${duration}</b></p>
+    <p><b>Reservation  : ${ReservationType} </b></p>
+    <p><b>Purpose of Visit : ${VisitPurpose}</b></p>
+    <p><b>Service Quality : ${ServiceQuality}</b></p>
+    <p><b>Staff Behaviour : ${StaffBehaviour}</b></p>
+    <p><b>Food : ${Food}</b></p>
+    <p><b>Cleanliness : ${Cleanliness}</b></p>
+    <p><b>Overall Experience : ${OverallExperience}</b></p>
+    <p><b>Other Suggestion : ${OtherSuggestion}</b></p>
+    
+    `, // html body
+  });
+  if (info) {
+    console.log("success");
+  } else {
+    console.log("error");
+  }
+
+  const feedback = await Feedback.create({
+    name,
+    number,
+    checkin,
+    duration,
+    hearAbout,
+    ReservationType,
+    VisitPurpose,
+    ServiceQuality,
+    Cleanliness,
+    Food,
+    StaffBehaviour,
+    OverallExperience,
+    OtherSuggestion,
+  });
+  if (feedback) {
+    console.log(feedback);
+    res.status(201).json(feedback);
+  } else {
+    res.status(400).json("Error");
+  }
+});
+
+// get all feedbacks
+app.get("/feedback", async (req, res) => {
+  const feedback = (await Feedback.find({})).reverse();
+  if (feedback) {
+    res.status(201).json(feedback);
+  } else {
+    res.status(400).json("Error");
+  }
 });
 
 // Admin
