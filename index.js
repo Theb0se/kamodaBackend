@@ -53,6 +53,7 @@ app.get("/", cors(), async (req, res) => {
   console.log(req.ip);
 
   res.send(req.ip, req.socket.remoteAddress);
+  
 });
 
 app.post("/updatePopup", cors(), async (req, res) => {
