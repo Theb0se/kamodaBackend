@@ -28,7 +28,17 @@ app.use(
   })
 );
 app.use(function (req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:8888");
+  res.setHeader("Access-Control-Allow-Origin", [
+    "*",
+    "http://192.168.1.100:3000",
+    "http://192.168.1.100:5500",
+    "http://192.168.1.101:3000",
+    "http://192.168.1.101:5500",
+    "http://192.168.1.102:3000",
+    "http://192.168.1.102:5500",
+    "https://thekamodaresort.com",
+    "https://thekamodaresort.com/admin",
+  ]);
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, OPTIONS, PUT, PATCH, DELETE"
