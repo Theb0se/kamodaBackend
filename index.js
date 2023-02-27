@@ -8,7 +8,6 @@ const background = require("./model/heroBgModel");
 const Admin = require("./model/adminModel");
 const Feedback = require("./model/feedbackModel");
 const nodemailer = require("nodemailer");
-const crypto = require("crypto");
 
 app.use(
   cors({
@@ -27,8 +26,16 @@ app.use(
     methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
   })
 );
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested, Content-Type, Accept Authorization"
+  );
+  if (req.method === "OPTIONS") {
+    res.header("Access-Control-Allow-Methods", "POST, PUT, PATCH, GET, DELETE");
+    return res.status(200).json({});
+  }
   next();
 });
 
@@ -202,7 +209,7 @@ app.post("/feedback", cors(), async (req, res) => {
 });
 
 // get all feedbacks
-app.get("/feedback", async (req, res) => {
+app.get("/feedback", cors(), async (req, res) => {
   const feedback = (await Feedback.find({})).reverse();
   if (feedback) {
     res.status(201).json(feedback);
@@ -234,11 +241,6 @@ app.post("/signin", cors(), async (req, res) => {
   } else {
     res.status(400).json("email or passsword wrong");
   }
-});
-
-app.get("/crypto", async (req, res) => {
-  const cr = crypto.getHashes();
-  res.send(cr);
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
