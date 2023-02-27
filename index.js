@@ -128,7 +128,7 @@ app.get("/bg", cors(), async (req, res) => {
 });
 
 // Post Feedback
-app.post("/feedback", async (req, res) => {
+app.post("/feedback", cors(), async (req, res) => {
   const {
     name,
     number,
