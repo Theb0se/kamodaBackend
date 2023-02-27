@@ -26,16 +26,8 @@ app.use(
     methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
   })
 );
-app.use((req, res, next) => {
+app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested, Content-Type, Accept Authorization"
-  );
-  if (req.method === "OPTIONS") {
-    res.header("Access-Control-Allow-Methods", "POST, PUT, PATCH, GET, DELETE");
-    return res.status(200).json({});
-  }
   next();
 });
 
@@ -242,5 +234,7 @@ app.post("/signin", cors(), async (req, res) => {
     res.status(400).json("email or passsword wrong");
   }
 });
+
+
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
