@@ -8,6 +8,7 @@ const background = require("./model/heroBgModel");
 const Admin = require("./model/adminModel");
 const Feedback = require("./model/feedbackModel");
 const nodemailer = require("nodemailer");
+const crypto = require("crypto");
 
 app.use(
   cors({
@@ -15,6 +16,10 @@ app.use(
       "*",
       "http://192.168.1.100:3000",
       "http://192.168.1.100:5500",
+      "http://192.168.1.101:3000",
+      "http://192.168.1.101:5500",
+      "http://192.168.1.102:3000",
+      "http://192.168.1.102:5500",
       "https://thekamodaresort.com",
       "https://thekamodaresort.com/admin",
     ],
@@ -229,6 +234,11 @@ app.post("/signin", cors(), async (req, res) => {
   } else {
     res.status(400).json("email or passsword wrong");
   }
+});
+
+app.get("/crypto", async (req, res) => {
+  const cr = crypto.getHashes();
+  res.send(cr);
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
