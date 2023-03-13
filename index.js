@@ -28,6 +28,8 @@ app.use(
 );
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Credentials", true);
+
   next();
 });
 
@@ -153,7 +155,7 @@ app.post("/feedback", cors(), async (req, res) => {
 
   let info = await transporter.sendMail({
     from: `${name} <kamodafeedback@theb0se.com>`, // sender address
-    to: "rishabhbose3@gmail.com", // list of receivers
+    to: "thekamodaresort@gmail.com", // list of receivers
     subject: `New Feedback From ${name}`, // Subject line
     html: `
     <p><b>Name : ${name}</b></p>
@@ -234,7 +236,5 @@ app.post("/signin", cors(), async (req, res) => {
     res.status(400).json("email or passsword wrong");
   }
 });
-
-
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
